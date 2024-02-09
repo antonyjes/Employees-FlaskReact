@@ -1,8 +1,9 @@
+import { HomeFooter } from "@/components/home-footer";
 import { HomeNav } from "@/components/home-nav";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-const LayoutHome = (children) => {
+const LayoutHome = ({children}) => {
     return(
         <div className="flex min-h-screen flex-col">
             <header className="container z-40 bg-background">
@@ -17,6 +18,7 @@ const LayoutHome = (children) => {
             <main className="flex-1">
                 {children}
             </main>
+            <HomeFooter />
         </div>
     )
 }
