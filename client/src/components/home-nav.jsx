@@ -13,10 +13,10 @@ export const HomeNav = () => {
                 <a href="/" className="text-lg font-medium transition-colors hover:text-foreground/80 sm:text-sm">
                     Inicio
                 </a>
-                <a href="/pricing" className="text-lg font-medium transition-colors hover:text-foreground/80 sm:text-sm">
+                <a href="/" className="text-lg font-medium transition-colors hover:text-foreground/80 sm:text-sm">
                     Pricing
                 </a>
-                <a href="/aboutus" className="text-lg font-medium transition-colors hover:text-foreground/80 sm:text-sm">
+                <a href="/" className="text-lg font-medium transition-colors hover:text-foreground/80 sm:text-sm">
                     About us
                 </a>
             </nav>
