@@ -1,20 +1,24 @@
-import { HomeNav } from "@/components/home-nav";
-import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import LayoutHome from "./LayoutHome";
+import { buttonVariants } from "@/components/ui/button";
 
 const HomePage = () => {
     return(
-        <div className="flex min-h-screen flex-col">
-            <header className="container z-40 bg-background">
-                <div className="flex h-20 items-center justify-between py-6">
-                    <HomeNav />
-                    <nav>
-                        <a href="/login" className={cn(buttonVariants({variant: "secondary", size: "sm"}), "px-4")}>Login</a>
-                        <a href="/register" className={cn(buttonVariants({variant: "primary", size: "sm"}), "px-4")}>Register</a>
-                    </nav>
+        <LayoutHome>
+            <section className="space-y-6 pb-8 pt-6 md:pb-12 md:pt-10 lg:py-32">
+                <div className="container flex max-w-[64rem] flex-col items-center gap-4 text-center">
+                    <h1 className="font-heading text-3xl sm:text-5xl md:text-6xl lg:text-7xl">An example app using Shadcn/UI with React.</h1>
+                    <p className="max-w-[42rem] leading-normal text-muted-foreground sm:text-xl sm:leading-8">
+                        I&apos;m building a web app with Flask and React and open sourcing everything. Follow along as we figure this out together.
+                    </p>
+                    <div className="space-x-4">
+                        <a href="/register" className={cn(buttonVariants({ size: "lg"}))}>
+                            Get Started
+                        </a>
+                    </div>
                 </div>
-            </header>
-        </div>
+            </section>
+        </LayoutHome>
     )
 }
 
