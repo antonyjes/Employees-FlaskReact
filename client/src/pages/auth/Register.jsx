@@ -1,11 +1,38 @@
 import { cn } from "@/lib/utils";
 import LayoutHome from "../LayoutHome";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Command } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 const Register = () => {
+    const navigate = useNavigate();
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const savedUserResponse = await fetch(
+            "http://localhost:3003/users/createUser",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({username: username, email: email, password: password})
+            }
+        );
+
+        const savedUser = await savedUserResponse.json();
+
+        if (savedUser) {
+            navigate("/login");
+        }
+    }
+
     return(
         <LayoutHome>
             <div className="min-h-[80vh]">
@@ -19,7 +46,7 @@ const Register = () => {
                                 <p className="text-sm text-muted-foreground">Enter your email below to create your account</p>
                             </div>
                             <div className="grid gap-6">
-                                <form className="grid gap-6">
+                                <form className="grid gap-6" onSubmit={handleSubmit}>
                                     <div className="grip gap-2">
                                         <div className="grid gap-1">
                                             <Label htmlFor="email">
@@ -28,7 +55,8 @@ const Register = () => {
                                             <Input
                                                 id="email"
                                                 placeholder="name@example.com"
-                                                type="email"                                                
+                                                type="email"
+                                                onChange={(e) => setEmail(e.target.value)}                                                
                                             />
                                         </div>
                                     </div>
@@ -40,7 +68,8 @@ const Register = () => {
                                             <Input
                                                 id="username"
                                                 placeholder="example"
-                                                type="text"                                                
+                                                type="text"
+                                                onChange={(e) => setUsername(e.target.value)}                                                
                                             />
                                         </div>
                                     </div>
@@ -52,9 +81,13 @@ const Register = () => {
                                             <Input
                                                 id="password"
                                                 placeholder="..."
-                                                type="password"                                                
+                                                type="password"
+                                                onChange={(e) => setPassword(e.target.value)}                                                
                                             />
                                         </div>
+                                    </div>
+                                    <div className="flex justify-center">
+                                        <Button className="w-[25%]">Send</Button>
                                     </div>
                                 </form>
                             </div>
