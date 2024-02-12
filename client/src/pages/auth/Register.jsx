@@ -16,7 +16,7 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const savedUserResponse = await fetch(
-            "http://localhost:3003/users/createUser",
+            "http://127.0.0.1:3000/register",
             {
                 method: "POST",
                 headers: {
