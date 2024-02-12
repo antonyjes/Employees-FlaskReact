@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 const Register = () => {
     const navigate = useNavigate();
@@ -28,8 +29,9 @@ const Register = () => {
 
         const savedUser = await savedUserResponse.json();
 
-        if (savedUser) {
+        if (savedUser) {            
             navigate("/login");
+            toast.success("User created!")
         }
     }
 
