@@ -29,5 +29,25 @@ def register():
         print(e)
         return jsonify({'error': str(e)}), 500
 
+@app.route("/login", methods=['POST'])
+def login():
+    data = request.json
+    email = data.get('email')
+    password = data.get('password')
+
+    try:
+        cursor = mysql.connection.cursor()
+        cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
+        user = cursor.fetchone()
+        cursor.close()
+
+        if user and check_password_hash(user['password'], password):
+            return jsonify({'user': user, 'token': ''}), 200
+        else:
+            return jsonify({'error': 'Invalid credentials'}), 401
+    except Exception as e:
+        print(e)
+        return jsonify({"error": str(e)}), 500
+
 if __name__ == "__main__":
     app.run(port=3000, debug=True)
