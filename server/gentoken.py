@@ -13,6 +13,7 @@ def generate_token(user_id):
         }
 
         token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
+        return token
     except Exception as e:
         print('Error generating token: ', str(e))
         return None

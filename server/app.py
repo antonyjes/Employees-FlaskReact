@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 from flask_mysqldb import MySQL
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
+from gentoken import generate_token
 
 app = Flask(__name__)
 CORS(app)
@@ -11,6 +12,7 @@ app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'crud_db'
 mysql = MySQL(app)
+
 
 @app.route("/register", methods=['POST'])
 def register():
@@ -29,6 +31,7 @@ def register():
         print(e)
         return jsonify({'error': str(e)}), 500
 
+
 @app.route("/login", methods=['POST'])
 def login():
     data = request.json
@@ -40,14 +43,18 @@ def login():
         cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
         user = cursor.fetchone()
         cursor.close()
-
-        if user and check_password_hash(user['password'], password):
-            return jsonify({'user': user, 'token': ''}), 200
+        if user and check_password_hash(user[3], password):
+            token = generate_token(user[0])
+            if token:
+                return jsonify({'user': user, 'token': token}), 200
+            else:
+                return jsonify({'error': 'Failed to generate token'}), 500
         else:
             return jsonify({'error': 'Invalid credentials'}), 401
     except Exception as e:
         print(e)
         return jsonify({"error": str(e)}), 500
+
 
 if __name__ == "__main__":
     app.run(port=3000, debug=True)
