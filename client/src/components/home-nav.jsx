@@ -1,9 +1,9 @@
 import { Command } from "lucide-react";
 
-export const HomeNav = ({ items }) => {
+export const HomeNav = ({ items, isAuth }) => {
   return (
     <div className="flex gap-6 md:gap-10">
-      <a href="/" className="hidden items-center space-x-2 md:flex">
+      <a href={isAuth ? "/home" : "/"} className="hidden items-center space-x-2 md:flex">
         <Command />
         <span className="hidden font-bold sm:inline-block">CRUD</span>
       </a>

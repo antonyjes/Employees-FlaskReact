@@ -2,27 +2,31 @@ import { HomeFooter } from "@/components/home-footer";
 import { HomeNav } from "@/components/home-nav";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { setLogout } from "@/state";
+import { useDispatch } from "react-redux";
 
 const LayoutHome = (
   { children,
   items = [{ title: "Inicio", href: "/" }],
   isAuth = false }
 ) => {
+  const dispatch = useDispatch();
+
   return (
     <div className="flex min-h-screen flex-col">
       <header className="container z-40 bg-background">
         <div className="flex h-20 items-center justify-between py-6">
-          <HomeNav items={items} />
+          <HomeNav items={items} isAuth={isAuth} />
           {isAuth ? (
             <nav>
-              <a
-                href="/signout"
+              <button
                 className={cn(
                   buttonVariants({ variant: "secondary", size: "sm" })
                 )}
+                onClick={() => dispatch(setLogout())}
               >
                 Sign out
-              </a>
+              </button>
             </nav>
           ) : (
             <nav>
