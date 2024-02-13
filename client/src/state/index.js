@@ -3,8 +3,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     user: null,
     token: null,
-    users: [],
-    teams: [],
+    companies: [],
+    employees: [],
 };
 
 export const authSlice = createSlice({
@@ -19,14 +19,14 @@ export const authSlice = createSlice({
             state.user = null;
             state.token = null;
         },
-        setUsers: (state, action) => {
-            state.users = action.payload.users;
+        setCompanies: (state, action) => {
+            state.companies = action.payload.companies;
         },
-        setTeams: (state, action) => {
-            state.teams = action.payload.teams;
+        setEmployees: (state, action) => {
+            state.employees = action.payload.employees;
         }
     }
 });
 
-export const {setLogin, setLogout, setUsers, setTeams} = authSlice.actions;
+export const {setLogin, setLogout, setCompanies, setEmployees} = authSlice.actions;
 export default authSlice.reducer;
