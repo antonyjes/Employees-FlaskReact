@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, request
-from flask_mysqldb import MySQL
+from flask_mysqldb import MySQL, MySQLdb
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 from gentoken import generate_token
@@ -39,12 +39,13 @@ def login():
     password = data.get('password')
 
     try:
-        cursor = mysql.connection.cursor()
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
         user = cursor.fetchone()
         cursor.close()
-        if user and check_password_hash(user[3], password):
-            token = generate_token(user[0])
+        if user and check_password_hash(user['password'], password):
+            token = generate_token(user['id'])
+            del user['password']
             if token:
                 return jsonify({'user': user, 'token': token}), 200
             else:
