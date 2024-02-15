@@ -95,7 +95,28 @@ def createCompanies():
             app.logger.error(e)
             return jsonify({"error": str(e)}), 500
     else:
-        return jsonify({'error': 'Invalid token'}), 401 
+        return jsonify({'error': 'Invalid token'}), 401
+
+
+@app.route("/companies/<id>/edit", methods=['PATCH'])
+def editCompany(id):
+    data= request.json
+    name = data.get('name')
+    token = request.headers.get("Authorization")
+    if token:
+        try:
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute("UPDATE companies SET name = %s WHERE id = %s", (name, id,))
+            mysql.connection.commit()
+            cursor.execute("SELECT * FROM companies WHERE id = %s", (id,))
+            updated_company = cursor.fetchone()
+            cursor.close()
+            return jsonify(updated_company), 200
+        except Exception as e:
+            app.logger.error(e)
+            return jsonify({"error": str(e)}), 500
+    else:
+        return jsonify({'error': 'Invalid token'}), 401
 
 
 if __name__ == "__main__":
