@@ -20,17 +20,18 @@ const ModalCompany = ({
 }) => {
   const [name, setName] = useState(currentCompany.name || "");
   const token = useSelector((state) => state.token);
+  const userId = useSelector((state) => state.user.id)
 
   const createCompany = async () => {
     const savedCompanyResponse = await fetch(
-      "http://127.0.0.1/companies/create",
+      "http://127.0.0.1:3000/companies/create",
       {
         method: "POST",
         headers: {
           Authorization: `${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name: name }),
+        body: JSON.stringify({ userId: userId, name: name }),
       }
     );
 
@@ -45,7 +46,7 @@ const ModalCompany = ({
 
   const editCompany = async () => {
     const editCompanyResponse = await fetch(
-      `http://127.0.0.1/companies/${currentCompany.id}/edit`,
+      `http://127.0.0.1:3000/companies/${currentCompany.id}/edit`,
       {
         method: "PATCH",
         headers: {
@@ -85,7 +86,7 @@ const ModalCompany = ({
                   <Label htmlFor="name">Name</Label>
                   <Input
                     id="name"
-                    placeholder="name@example.com"
+                    placeholder="Company name"
                     type="text"
                     onChange={(e) => setName(e.target.value)}
                   />
