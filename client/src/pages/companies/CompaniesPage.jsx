@@ -10,10 +10,11 @@ const CompaniesPage = () => {
     const dispatch = useDispatch();
     const companies = useSelector((state) => state.companies);
     const token = useSelector((state) => state.token);
-    const [showModal, setShowModal] = useState(false)
+    const [showModal, setShowModal] = useState(false);
+    const userId = useSelector((state) => state.user.id)
 
     const getCompanies = async () => {
-        const response = await fetch("http://127.0.0.1:3000/companies", {
+        const response = await fetch(`http://127.0.0.1:3000/companies/${userId}`, {
             method: "GET",
             headers: {Authorization: `${token}`},
         });

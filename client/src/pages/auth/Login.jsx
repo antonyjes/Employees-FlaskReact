@@ -38,6 +38,7 @@ const Login = () => {
                 })
             );
             navigate("/home")
+            console.log(loggedIn.user)
         }
 
         resetForm();

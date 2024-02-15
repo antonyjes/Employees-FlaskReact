@@ -55,6 +55,23 @@ def login():
     except Exception as e:
         print(e)
         return jsonify({"error": str(e)}), 500
+    
+
+@app.route("/companies/<userId>", methods=['GET'])
+def companies(userId):
+    token = request.headers.get("Authorization")
+    if token:
+        try:
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute("SELECT * FROM companies WHERE userId = %s", (userId,))
+            companies = cursor.fetchall()
+            cursor.close()
+            return jsonify(companies), 200
+        except Exception as e:
+            print(e)
+            return jsonify({"error": str(e)}), 500
+    else:
+        return jsonify({'error': 'Invalid token'}), 401
 
 
 if __name__ == "__main__":
