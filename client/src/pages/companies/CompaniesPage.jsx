@@ -2,13 +2,15 @@ import { useDispatch, useSelector } from "react-redux";
 import LayoutMain from "../main/LayoutMain"
 import { CompanyClient } from "./components/client";
 import { setCompanies } from "@/state";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { format } from "date-fns";
+import ModalCompany from "./ModalCompany";
 
 const CompaniesPage = () => {
     const dispatch = useDispatch();
     const companies = useSelector((state) => state.companies);
     const token = useSelector((state) => state.token);
+    const [showModal, setShowModal] = useState(false)
 
     const getCompanies = async () => {
         const response = await fetch("http://127.0.0.1:3000/companies", {
@@ -31,13 +33,26 @@ const CompaniesPage = () => {
     }, [])
 
     return(
-        <LayoutMain>
-            <div className="flex-col">
-                <div className="flex-1 space-y-4 p-8 pt-6">
-                    <CompanyClient data={formattedCompanies} />
+        <>
+            <LayoutMain>
+                <div className="flex-col">
+                    <div className="flex-1 space-y-4 p-8 pt-6">
+                        <CompanyClient data={formattedCompanies} setShowModal={setShowModal} />
+                    </div>
                 </div>
-            </div>
-        </LayoutMain>
+            </LayoutMain>
+            {
+                showModal && (
+                    <ModalCompany
+                        showModal={showModal}
+                        setShowModal={setShowModal}
+                        operation="Create"
+                        currentCompany={[]}
+                        getCompanies={getCompanies}
+                    />
+                )
+            }
+        </>
     )
 }
 
