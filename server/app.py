@@ -3,6 +3,7 @@ from flask_mysqldb import MySQL, MySQLdb
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 from gentoken import generate_token
+from datetime import datetime
 
 app = Flask(__name__)
 CORS(app)
@@ -28,7 +29,7 @@ def register():
         cursor.close()
         return jsonify({'messsage': 'Success'}), 200
     except Exception as e:
-        print(e)
+        app.logger.error(e)
         return jsonify({'error': str(e)}), 500
 
 
@@ -53,12 +54,12 @@ def login():
         else:
             return jsonify({'error': 'Invalid credentials'}), 401
     except Exception as e:
-        print(e)
+        app.logger.error(e)
         return jsonify({"error": str(e)}), 500
     
 
 @app.route("/companies/<userId>", methods=['GET'])
-def companies(userId):
+def getCompanies(userId):
     token = request.headers.get("Authorization")
     if token:
         try:
@@ -68,10 +69,33 @@ def companies(userId):
             cursor.close()
             return jsonify(companies), 200
         except Exception as e:
-            print(e)
+            app.logger.error(e)
             return jsonify({"error": str(e)}), 500
     else:
         return jsonify({'error': 'Invalid token'}), 401
+
+
+@app.route("/companies/create", methods=['POST'])
+def createCompanies():
+    data = request.json
+    userId = data.get('userId')
+    name = data.get('name')
+    createdAt = datetime.now()
+    token = request.headers.get("Authorization")
+    if token:
+        try:
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute("INSERT INTO companies(name, createdAt, userId) VALUES (%s, %s, %s)", (name, createdAt, userId,))
+            mysql.connection.commit()
+            cursor.execute("SELECT * FROM companies WHERE id = %s", (cursor.lastrowid,))
+            new_company = cursor.fetchone()
+            cursor.close()
+            return jsonify(new_company), 200
+        except Exception as e:
+            app.logger.error(e)
+            return jsonify({"error": str(e)}), 500
+    else:
+        return jsonify({'error': 'Invalid token'}), 401 
 
 
 if __name__ == "__main__":
