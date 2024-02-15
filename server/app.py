@@ -119,5 +119,23 @@ def editCompany(id):
         return jsonify({'error': 'Invalid token'}), 401
 
 
+@app.route("/companies/<id>/delete", methods=['DELETE'])
+def deleteCompany(id):
+    token = request.headers.get("Authorization")
+    if token:
+        try:
+            cursor = mysql.connection.cursor()
+            cursor.execute("UPDATE employees SET companyId = NULL WHERE companyId = %s", (id,))
+            cursor.execute("DELETE FROM companies WHERE id = %s", (id,))
+            mysql.connection.commit()
+            cursor.close()
+            return jsonify({"message": 'Company deleted successfully!'}), 200
+        except Exception as e:
+            app.logger.error(e)
+            return jsonify({"error": str(e)}), 500
+    else:
+        return jsonify({'error': 'Invalid token'}), 401
+
+
 if __name__ == "__main__":
     app.run(port=3000, debug=True)
