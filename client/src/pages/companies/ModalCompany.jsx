@@ -18,7 +18,7 @@ const ModalCompany = ({
   currentCompany,
   getCompanies,
 }) => {
-  const [name, setName] = useState(currentCompany.name || "");
+  const [name, setName] = useState(currentCompany?.name || "");
   const token = useSelector((state) => state.token);
   const userId = useSelector((state) => state.user.id)
 
@@ -89,11 +89,11 @@ const ModalCompany = ({
                     placeholder="Company name"
                     type="text"
                     onChange={(e) => setName(e.target.value)}
+                    value={name}
                   />
                 </div>
               </div>
               <div className="pt-6 space-x-2 flex items-center justify-end w-full">
-                <Button variant="outline" onClick={() => setShowModal(false)}>Cancel</Button>
                 <Button type="submit">Continue</Button>
               </div>
             </form>
