@@ -161,23 +161,14 @@ const ModalEmployee = ({
                 </div>
                 <div className="grid gap-1">
                   <Label>Company</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue
-                        placeholder="Select a company"
-                        onChange={(e) => setCompanyId(e.target.value)}
-                      />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        {companies.map((company) => (
-                          <SelectItem key={company.id} value={company.id}>
-                            {company.name}
-                          </SelectItem>
-                        ))}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
+                  <select value={companyId} onChange={(e) => setCompanyId(e.target.value)} className="h-10 rounded-md border border-input text-sm">
+                      <option value="">Select a company:</option>
+                      {
+                        companies.map((company) => (
+                          <option key={company.id} value={company.id}>{company.name}</option>
+                        ))
+                      }
+                  </select>
                 </div>
               </div>
               <div className="grid gap-1">
