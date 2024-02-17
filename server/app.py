@@ -137,5 +137,25 @@ def deleteCompany(id):
         return jsonify({'error': 'Invalid token'}), 401
 
 
+@app.route("/employees/<userId>", methods=['GET'])
+def getEmployees(userId):
+    token = request.headers.get("Authorization")
+    if token:
+        try:
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute("SELECT e.firstName, e.lastName, e.age, e.image, e.companyId, c.name AS companyName \
+                            FROM employees AS e \
+                            INNER JOIN companies AS c ON e.companyId = c.id \
+                            WHERE c.userId = %s", (userId,))
+            employees = cursor.fetchall()
+            cursor.close()
+            return jsonify(employees), 200
+        except Exception as e:
+            app.logger.error(e)
+            return jsonify({"error": str(e)}), 500
+    else:
+        return jsonify({'error': 'Invalid token'}), 401
+
+
 if __name__ == "__main__":
     app.run(port=3000, debug=True)
