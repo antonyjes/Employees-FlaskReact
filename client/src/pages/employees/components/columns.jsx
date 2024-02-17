@@ -18,7 +18,7 @@ export const columns = [
         header: "Image",
         cell: ({row}) => (
             <div className="flex items-center">
-                <img className="w-6 h-6 p-2" src={`http://localhost:3000/assets/employees/${row.original.image}`} />
+                <img className="w-[6rem] h-[6rem] p-2 object-cover rounded-full" src={`http://127.0.0.1:3000/assets/${row.original.image}`} />
             </div>
         )
     },
