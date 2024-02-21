@@ -227,5 +227,56 @@ def deleteEmployee(id):
         return jsonify({'error': 'Invalid token'}), 401
 
 
+@app.route("/employees/<id>/edit", methods=['PATCH'])
+def edit_employee(id):
+    data = request.form
+    first_name = data.get('firstName')
+    last_name = data.get('lastName')
+    age = data.get('age')
+    company_id = data.get('companyId')
+    image = request.files.get('imageReal')
+    token = request.headers.get("Authorization")
+
+    if token:
+        try:
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute("SELECT * FROM employees WHERE id = %s", (id,))
+            employee = cursor.fetchone()
+            if employee:
+                if image:
+                    # Delete the existing image file associated with the employee
+                    if employee['image']:
+                        os.remove(os.path.join(app.root_path, app.config['UPLOAD_FOLDER'], employee['image']))
+                    # Save the new image file
+                    filename = secure_filename(image.filename)
+                    unique_filename = generate_unique_filename(filename)
+                    image_path = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'], unique_filename)
+                    image.save(image_path)
+                    image_path = unique_filename
+                else:
+                    # If no new image file is provided, retain the existing image file path
+                    image_path = employee['image']
+                
+                # Update the employee's information in the database
+                cursor.execute("UPDATE employees SET firstName = %s, lastName = %s, age = %s, image = %s, companyId = %s WHERE id = %s",
+                               (first_name, last_name, age, image_path, company_id, id))
+                mysql.connection.commit()
+                
+                # Fetch the updated employee from the database
+                cursor.execute("SELECT * FROM employees WHERE id = %s", (id,))
+                updated_employee = cursor.fetchone()
+                cursor.close()
+                
+                return jsonify(updated_employee), 200
+            else:
+                return jsonify({'error': 'Employee not found'}), 404
+        except Exception as e:
+            app.logger.error(e)
+            return jsonify({"error": str(e)}), 500
+    else:
+        return jsonify({'error': 'Invalid token'}), 401
+    
+
+
 if __name__ == "__main__":
     app.run(port=3000, debug=True)
