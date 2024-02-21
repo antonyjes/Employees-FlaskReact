@@ -43,6 +43,7 @@ export const CellAction = ({ data }) => {
       }
     );
     console.log(response);
+    setShowAlert(false)
     toast.success("Employee deleted!");
     getEmployees();
   }

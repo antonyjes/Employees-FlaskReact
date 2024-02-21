@@ -204,5 +204,28 @@ def getImage(filename):
         return jsonify({'error': 'Image not found'}), 404
 
 
+@app.route("/employees/<id>/delete", methods=['DELETE'])
+def deleteEmployee(id):
+    token = request.headers.get("Authorization")
+    if token:
+        try:
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute("SELECT image FROM employees WHERE id = %s", (id,))
+            employee = cursor.fetchone()
+            imagePath = employee['image']
+            completeImagePath = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'], imagePath)
+            if os.path.exists(completeImagePath):
+                os.unlink(completeImagePath)
+            cursor.execute("DELETE FROM employees WHERE id = %s", (id,))
+            mysql.connection.commit()
+            cursor.close()
+            return jsonify({"message": 'Employee deleted successfully!'}), 200
+        except Exception as e:
+            app.logger.error(e)
+            return jsonify({"error": str(e)}), 500
+    else:
+        return jsonify({'error': 'Invalid token'}), 401
+
+
 if __name__ == "__main__":
     app.run(port=3000, debug=True)
