@@ -98,9 +98,7 @@ const ModalEmployee = ({
       `http://127.0.0.1:3000/employees/${currentEmployee.id}/edit`,
       {
         method: "PATCH",
-        headers: {
-          Authorization: `${token}`,
-        },
+        headers: { Authorization: `${token}` },
         body: formData,
       }
     );
@@ -161,13 +159,17 @@ const ModalEmployee = ({
                 </div>
                 <div className="grid gap-1">
                   <Label>Company</Label>
-                  <select value={companyId} onChange={(e) => setCompanyId(e.target.value)} className="h-10 rounded-md border border-input text-sm">
-                      <option value="">Select a company:</option>
-                      {
-                        companies.map((company) => (
-                          <option key={company.id} value={company.id}>{company.name}</option>
-                        ))
-                      }
+                  <select
+                    value={companyId}
+                    onChange={(e) => setCompanyId(e.target.value)}
+                    className="h-10 rounded-md border border-input text-sm"
+                  >
+                    <option value="">Select a company:</option>
+                    {companies.map((company) => (
+                      <option key={company.id} value={company.id}>
+                        {company.name}
+                      </option>
+                    ))}
                   </select>
                 </div>
               </div>

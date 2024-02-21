@@ -147,7 +147,7 @@ def getEmployees(userId):
     if token:
         try:
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute("SELECT e.firstName, e.lastName, e.age, e.image, e.companyId, c.name AS companyName \
+            cursor.execute("SELECT e.id, e.firstName, e.lastName, e.age, e.image, e.companyId, c.name AS companyName \
                             FROM employees AS e \
                             INNER JOIN companies AS c ON e.companyId = c.id \
                             WHERE c.userId = %s", (userId,))
@@ -202,6 +202,44 @@ def getImage(filename):
         return send_file(os.path.join(app.config['UPLOAD_FOLDER'], filename))
     except FileNotFoundError:
         return jsonify({'error': 'Image not found'}), 404
+
+
+@app.route("/employees/<id>/edit", methods=['PATCH'])
+def editEmployee(id):
+    data = request.form
+    firstName = data.get('firstName')
+    lastName = data.get('lastName')
+    age = data.get('age')
+    companyId = data.get('companyId')
+    image = request.files['imageReal']
+    imagePath = data.get('image')
+    token = request.headers.get("Authorization")
+
+    if token:
+        try:
+            if image:
+                filename = secure_filename(image.filename)
+                unique_filename = generate_unique_filename(filename)
+                upload_path = os.path.join(app.root_path, app.config['UPLOAD_FOLDER'])
+                if not os.path.exists(upload_path):
+                    os.makedirs(upload_path)
+                imagePath = os.path.join(upload_path, unique_filename)
+                with open(imagePath, 'wb') as f:
+                    image.save(f)
+            else:
+                pass
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute("UPDATE employees SET firstName = %s, lastName = %s, age = %s, image = %s, companyId = %s WHERE id = %s", (firstName, lastName, age, imagePath, companyId, id))
+            mysql.connection.commit()
+            cursor.execute("SELECT * FROM employees WHERE id = %s", (id))
+            edited_employee = cursor.fetchone()
+            cursor.close()
+            return jsonify(edited_employee), 200
+        except Exception as e:
+            app.logger.error(e)
+            return jsonify({"error": str(e)}), 500
+    else:
+        return jsonify({'error': 'Invalid token'}), 401
 
 
 if __name__ == "__main__":
